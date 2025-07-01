@@ -271,7 +271,6 @@ class _PDFViewerState extends State<PDFViewer> {
                       Expanded(
                         child: IconButton(
                           icon: Icon(Icons.first_page),
-                          tooltip: widget.tooltip.first,
                           onPressed: _pageNumber == 1
                               ? null
                               : () {
@@ -283,7 +282,6 @@ class _PDFViewerState extends State<PDFViewer> {
                       Expanded(
                         child: IconButton(
                           icon: Icon(Icons.chevron_left),
-                          tooltip: widget.tooltip.previous,
                           onPressed: _pageNumber == 1
                               ? null
                               : () {
@@ -301,7 +299,6 @@ class _PDFViewerState extends State<PDFViewer> {
                       Expanded(
                         child: IconButton(
                           icon: Icon(Icons.chevron_right),
-                          tooltip: widget.tooltip.next,
                           onPressed: _pageNumber == widget.document.count
                               ? null
                               : () {
@@ -316,7 +313,6 @@ class _PDFViewerState extends State<PDFViewer> {
                       Expanded(
                         child: IconButton(
                           icon: Icon(Icons.last_page),
-                          tooltip: widget.tooltip.last,
                           onPressed: _pageNumber == widget.document.count
                               ? null
                               : () {
