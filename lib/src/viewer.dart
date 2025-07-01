@@ -21,6 +21,8 @@ class PDFViewer extends StatefulWidget {
   final double? minScale;
   final double? maxScale;
   final double? panLimit;
+  final Widget? progressIndicator;
+  final Color? panelColor;
 
   final Widget Function(
     BuildContext,
@@ -41,6 +43,8 @@ class PDFViewer extends StatefulWidget {
       this.showPicker = true,
       this.showNavigation = true,
       this.enableSwipeNavigation = true,
+      this.progressIndicator,
+      this.panelColor,
       this.tooltip = const PDFViewerTooltip(),
       this.navigationBuilder,
       this.controller,
@@ -149,7 +153,8 @@ class _PDFViewerState extends State<PDFViewer> {
   }
 
   _animateToPage({int? page}) {
-    _pageController!.animateToPage(page != null ? page : _pageNumber! - 1, duration: animationDuration, curve: animationCurve);
+    _pageController!.animateToPage(page != null ? page : _pageNumber! - 1,
+        duration: animationDuration, curve: animationCurve);
   }
 
   _jumpToPage({int? page}) {
@@ -158,11 +163,19 @@ class _PDFViewerState extends State<PDFViewer> {
 
   Widget _drawIndicator() {
     Widget child = GestureDetector(
-        onTap: widget.showPicker && widget.document.count! > 1 ? _pickPage : null,
+        onTap:
+            widget.showPicker && widget.document.count! > 1 ? _pickPage : null,
         child: Container(
-            padding: EdgeInsets.only(top: 4.0, left: 16.0, bottom: 4.0, right: 16.0),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: widget.indicatorBackground),
-            child: Text("$_pageNumber/${widget.document.count}", style: TextStyle(color: widget.indicatorText, fontSize: 16.0, fontWeight: FontWeight.w400))));
+            padding:
+                EdgeInsets.only(top: 4.0, left: 16.0, bottom: 4.0, right: 16.0),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4.0),
+                color: widget.indicatorBackground),
+            child: Text("$_pageNumber/${widget.document.count}",
+                style: TextStyle(
+                    color: widget.indicatorText,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400))));
 
     switch (widget.indicatorPosition) {
       case IndicatorPosition.topLeft:
@@ -206,7 +219,9 @@ class _PDFViewerState extends State<PDFViewer> {
       body: Stack(
         children: <Widget>[
           PageView.builder(
-            physics: _swipeEnabled && widget.enableSwipeNavigation ? AlwaysScrollableScrollPhysics() : NeverScrollableScrollPhysics(),
+            physics: _swipeEnabled && widget.enableSwipeNavigation
+                ? AlwaysScrollableScrollPhysics()
+                : NeverScrollableScrollPhysics(),
             onPageChanged: (page) {
               setState(() {
                 _pageNumber = page + 1;
@@ -217,12 +232,15 @@ class _PDFViewerState extends State<PDFViewer> {
             controller: _pageController,
             itemCount: _pages?.length ?? 0,
             itemBuilder: (context, index) => _pages![index] == null
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
+                ? widget.progressIndicator ??
+                    Center(
+                      child: CircularProgressIndicator(),
+                    )
                 : _pages![index]!,
           ),
-          (widget.showIndicator && !_isLoading) ? _drawIndicator() : Container(),
+          (widget.showIndicator && !_isLoading)
+              ? _drawIndicator()
+              : Container(),
         ],
       ),
       floatingActionButton: widget.showPicker && widget.document.count! > 1
@@ -246,6 +264,7 @@ class _PDFViewerState extends State<PDFViewer> {
                   _animateToPage,
                 )
               : BottomAppBar(
+                  color: widget.panelColor,
                   child: new Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -276,7 +295,9 @@ class _PDFViewerState extends State<PDFViewer> {
                                 },
                         ),
                       ),
-                      widget.showPicker ? Expanded(child: Text('')) : SizedBox(width: 1),
+                      widget.showPicker
+                          ? Expanded(child: Text(''))
+                          : SizedBox(width: 1),
                       Expanded(
                         child: IconButton(
                           icon: Icon(Icons.chevron_right),
